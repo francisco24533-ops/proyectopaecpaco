@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Lavanda</title>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
+    input, button { padding: 10px; margin: 5px; }
+    li { background: white; margin: 5px; padding: 10px; }
+  </style>
+</head>
+<body>
+
+<h1>🌱 Registro de Crecimiento de Lavanda</h1>
+
+<input id="alumno" placeholder="Nombre del alumno">
+<input id="altura" type="number" placeholder="Altura (cm)">
+<input id="fecha" type="date">
+<button onclick="guardar()">Guardar</button>
+
+<h2>📋 Registros:</h2>
+<ul id="lista"></ul>
+
+<script>
+async function guardar() {
+  const alumno = document.getElementById("alumno").value;
+  const altura = document.getElementById("altura").value;
+  const fecha = document.getElementById("fecha").value;
+
+  await fetch("/registros", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ alumno, altura, fecha })
+  });
+
+  cargar();
+}
+
+async function cargar() {
+  const res = await fetch("/registros");
+  const data = await res.json();
+
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  data.forEach(r => {
+    lista.innerHTML += `<li>${r.alumno} - ${r.altura} cm - ${r.fecha}</li>`;
+  });
+}
+
+cargar();
+</script>
+
+</body>
+</html>
