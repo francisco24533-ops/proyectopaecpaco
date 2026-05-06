@@ -1,47 +1,66 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
 
-// ✅ conexión usando variable de entorno (Render)
+// conexión Mongo
 mongoose.connect(process.env.MONGO_URL)
 .then(()=>console.log("Mongo conectado"))
-.catch(err=>console.log("Error Mongo:", err));
+.catch(err=>console.log(err));
 
-// ✅ modelo
+// configuración de imágenes
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage });
+
+// modelo
 const Registro = mongoose.model("Registro", {
   alumno: String,
   altura: Number,
-  fecha: String
+  fecha: String,
+  imagen: String
 });
 
-// ✅ guardar
-app.post("/registros", async (req, res) => {
-  try {
-    const nuevo = new Registro(req.body);
-    await nuevo.save();
-    res.send("Guardado");
-  } catch (error) {
-    res.status(500).send("Error al guardar");
-  }
+// guardar registro con imagen
+app.post("/registros", upload.single("imagen"), async (req, res) => {
+
+  const nuevo = new Registro({
+    alumno: req.body.alumno,
+    altura: req.body.altura,
+    fecha: req.body.fecha,
+    imagen: req.file ? "/uploads/" + req.file.filename : ""
+  });
+
+  await nuevo.save();
+
+  res.send("Guardado");
 });
 
-// ✅ obtener
+// obtener registros
 app.get("/registros", async (req, res) => {
-  try {
-    const datos = await Registro.find();
-    res.json(datos);
-  } catch (error) {
-    res.status(500).send("Error al obtener datos");
-  }
+
+  const datos = await Registro.find();
+
+  res.json(datos);
 });
 
-// ✅ puerto dinámico (Render)
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => console.log("Servidor corriendo en puerto " + PORT));
+app.listen(PORT, () => {
+  console.log("Servidor corriendo");
+});
