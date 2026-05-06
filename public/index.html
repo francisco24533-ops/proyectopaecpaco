@@ -1,12 +1,146 @@
+# 🌱 Agregar imágenes a tu proyecto de Lavanda
+
+## 1. Instalar paquete para subir imágenes
+
+Abre CMD en tu proyecto:
+
+```bash
+npm install multer
+```
+
+---
+
+# 2. Reemplaza TODO tu `server.js`
+
+```js
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
+
+// conexión Mongo
+mongoose.connect(process.env.MONGO_URL)
+.then(()=>console.log("Mongo conectado"))
+.catch(err=>console.log(err));
+
+// configuración de imágenes
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage });
+
+// modelo
+const Registro = mongoose.model("Registro", {
+  alumno: String,
+  altura: Number,
+  fecha: String,
+  imagen: String
+});
+
+// guardar registro con imagen
+app.post("/registros", upload.single("imagen"), async (req, res) => {
+
+  const nuevo = new Registro({
+    alumno: req.body.alumno,
+    altura: req.body.altura,
+    fecha: req.body.fecha,
+    imagen: req.file ? "/uploads/" + req.file.filename : ""
+  });
+
+  await nuevo.save();
+
+  res.send("Guardado");
+});
+
+// obtener registros
+app.get("/registros", async (req, res) => {
+
+  const datos = await Registro.find();
+
+  res.json(datos);
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Servidor corriendo");
+});
+```
+
+---
+
+# 3. Crear carpeta uploads
+
+En tu proyecto crea una carpeta llamada:
+
+```text
+uploads
+```
+
+Tu proyecto quedará así:
+
+```text
+proyectopaecpaco/
+│
+├── public/
+│   └── index.html
+│
+├── uploads/
+│
+├── server.js
+├── package.json
+└── package-lock.json
+```
+
+---
+
+# 4. Reemplaza TODO tu `public/index.html`
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Registro de Lavanda</title>
+
   <style>
-    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
-    input, button { padding: 10px; margin: 5px; }
-    li { background: white; margin: 5px; padding: 10px; }
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 5px;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+
+    img {
+      width: 200px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -16,42 +150,101 @@
 <input id="alumno" placeholder="Nombre del alumno">
 <input id="altura" type="number" placeholder="Altura (cm)">
 <input id="fecha" type="date">
+
+<input id="imagen" type="file">
+
 <button onclick="guardar()">Guardar</button>
 
 <h2>📋 Registros:</h2>
-<ul id="lista"></ul>
+
+<div id="lista"></div>
 
 <script>
+
 async function guardar() {
+
   const alumno = document.getElementById("alumno").value;
   const altura = document.getElementById("altura").value;
   const fecha = document.getElementById("fecha").value;
+  const imagen = document.getElementById("imagen").files[0];
+
+  const formData = new FormData();
+
+  formData.append("alumno", alumno);
+  formData.append("altura", altura);
+  formData.append("fecha", fecha);
+  formData.append("imagen", imagen);
 
   await fetch("/registros", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ alumno, altura, fecha })
+    body: formData
   });
 
   cargar();
 }
 
 async function cargar() {
+
   const res = await fetch("/registros");
   const data = await res.json();
 
   const lista = document.getElementById("lista");
+
   lista.innerHTML = "";
 
   data.forEach(r => {
-    lista.innerHTML += `<li>${r.alumno} - ${r.altura} cm - ${r.fecha}</li>`;
+
+    lista.innerHTML += `
+      <div class="card">
+        <h3>${r.alumno}</h3>
+        <p>🌱 Altura: ${r.altura} cm</p>
+        <p>📅 Fecha: ${r.fecha}</p>
+
+        ${r.imagen ? `<img src="${r.imagen}">` : ""}
+      </div>
+    `;
   });
 }
 
 cargar();
+
 </script>
 
 </body>
 </html>
+```
+
+---
+
+# 5. Ejecutar proyecto
+
+```bash
+node server.js
+```
+
+Abrir:
+
+```text
+http://localhost:3000
+```
+
+---
+
+# 6. Subir cambios a GitHub
+
+```bash
+git add .
+git commit -m "imagenes agregadas"
+git push
+```
+
+---
+
+# 🔥 RESULTADO
+
+Ahora podrás:
+
+* ✅ subir imágenes
+* ✅ guardar fotos de la lavanda
+* ✅ mostrar imágenes en la página
+* ✅ guardar registros en MongoDB
