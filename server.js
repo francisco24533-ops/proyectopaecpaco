@@ -2,7 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const multer = require("multer");
-const path = require("path");
+
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 const app = express();
 
@@ -10,26 +12,37 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
-app.use("/uploads", express.static("uploads"));
 
-// CONEXIÓN MONGODB
-mongoose.connect("mongodb+srv://francisco24533_db_user:paco@cluster0.p74517w.mongodb.net/miDB?retryWrites=true&w=majority")
+// CONEXIÓN A MONGODB
+mongoose.connect(process.env.MONGO_URL)
 .then(() => console.log("Mongo conectado"))
 .catch(err => console.log("Error Mongo:", err));
 
-// CONFIGURACIÓN IMÁGENES
-const storage = multer.diskStorage({
+// CONFIGURACIÓN CLOUDINARY
+cloudinary.config({
 
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
 
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+});
+
+// ALMACENAMIENTO CLOUDINARY
+const storage = new CloudinaryStorage({
+
+  cloudinary: cloudinary,
+
+  params: {
+
+    folder: "lavanda",
+
+    allowed_formats: ["jpg", "png", "jpeg"]
+
   }
 
 });
 
+// MULTER
 const upload = multer({ storage });
 
 // MODELO
@@ -52,15 +65,16 @@ app.post("/registros", upload.single("imagen"), async (req, res) => {
       alumno: req.body.alumno,
       altura: req.body.altura,
       fecha: req.body.fecha,
+
       imagen: req.file
-        ? "/uploads/" + req.file.filename
+        ? req.file.path
         : ""
 
     });
 
     await nuevo.save();
 
-    res.send("Guardado");
+    res.send("Guardado correctamente");
 
   } catch (error) {
 
