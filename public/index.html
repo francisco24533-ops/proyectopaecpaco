@@ -1,159 +1,361 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Registro de Lavanda</title>
+<meta charset="UTF-8">
+<title>Lavanda App</title>
 
-  <style>
+<style>
 
-    body {
-      font-family: Arial;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
+body{
+  font-family: Arial;
+  margin:0;
+  background:#f4f4f4;
+}
 
-    /* ENCABEZADO */
-    .header {
-      background: #7c3aed;
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
+/* LOGIN */
+.login{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  background:#7c3aed;
+  color:white;
+}
 
-    /* SLIDER */
-    .slider-container {
-      position: relative;
-      width: 100%;
-      height: 350px;
-      overflow: hidden;
-      background: black;
-    }
+.login input,
+.login select,
+.login button{
+  padding:12px;
+  margin:10px;
+  width:250px;
+  border:none;
+  border-radius:5px;
+}
 
-    .slider {
-      width: 100%;
-      height: 100%;
-      position: relative;
-    }
+.login button{
+  background:white;
+  color:#7c3aed;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-    .slider img {
-      width: 100%;
-      height: 350px;
-      object-fit: cover;
-      display: none;
-    }
+/* HEADER */
+.header{
+  background:#7c3aed;
+  color:white;
+  text-align:center;
+  padding:20px;
+}
 
-    .slider img.active {
-      display: block;
-    }
+/* SLIDER */
+.slider-container{
+  position:relative;
+  width:100%;
+  height:350px;
+  overflow:hidden;
+  background:black;
+}
 
-    /* FLECHAS */
-    .prev,
-    .next {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.5);
-      color: white;
-      border: none;
-      padding: 15px;
-      cursor: pointer;
-      font-size: 20px;
-    }
+.slider img{
+  width:100%;
+  height:350px;
+  object-fit:cover;
+  display:none;
+}
 
-    .prev {
-      left: 10px;
-    }
+.slider img.active{
+  display:block;
+}
 
-    .next {
-      right: 10px;
-    }
+.prev,
+.next{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(0,0,0,0.5);
+  color:white;
+  border:none;
+  padding:15px;
+  cursor:pointer;
+  font-size:20px;
+}
 
-    /* FORMULARIO */
-    .formulario {
-      padding: 20px;
-    }
+.prev{
+  left:10px;
+}
 
-    input, button {
-      padding: 10px;
-      margin: 5px;
-    }
+.next{
+  right:10px;
+}
 
-    button {
-      background: #7c3aed;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
+/* FORMULARIOS */
+.formulario,
+.articulos{
+  padding:20px;
+}
 
-    /* TARJETAS */
-    .card {
-      background: white;
-      padding: 15px;
-      margin: 15px;
-      border-radius: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    }
+input,
+textarea,
+button{
+  padding:10px;
+  margin:5px;
+}
 
-    .card img {
-      width: 250px;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
+button{
+  background:#7c3aed;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
 
-  </style>
+textarea{
+  width:300px;
+  height:100px;
+}
+
+/* TARJETAS */
+.card{
+  background:white;
+  padding:15px;
+  margin:15px;
+  border-radius:10px;
+  box-shadow:0 0 5px rgba(0,0,0,0.2);
+}
+
+.card img{
+  width:250px;
+  border-radius:10px;
+  margin-top:10px;
+}
+
+/* ARTICULOS */
+.articulo{
+  background:white;
+  margin:20px;
+  padding:20px;
+  border-radius:10px;
+}
+
+.articulo img{
+  width:300px;
+  border-radius:10px;
+}
+
+.oculto{
+  display:none;
+}
+
+</style>
 </head>
 
 <body>
 
-  <!-- ENCABEZADO -->
-  <div class="header">
-    <h1>🌱 Registro de Crecimiento de Lavanda</h1>
-    <p>Seguimiento del crecimiento de las plantas</p>
-  </div>
+<!-- LOGIN -->
+<div class="login" id="login">
 
-  <!-- SLIDER -->
-  <div class="slider-container">
+<h1>🌱 Sistema Lavanda</h1>
 
-    <div class="slider" id="slider">
-    </div>
+<select id="tipoUsuario">
+  <option value="visitante">Visitante</option>
+  <option value="registro">Registro Lavanda</option>
+  <option value="admin">Administrador</option>
+</select>
 
-    <button class="prev" onclick="anterior()">⬅</button>
-    <button class="next" onclick="siguiente()">➡</button>
+<input type="password" id="password" placeholder="Contraseña">
 
-  </div>
+<button onclick="entrar()">Entrar</button>
 
-  <!-- FORMULARIO -->
-  <div class="formulario">
+</div>
 
-    <input id="alumno" placeholder="Nombre del alumno">
+<!-- CONTENIDO -->
+<div id="contenido" class="oculto">
 
-    <input id="altura" type="number" placeholder="Altura (cm)">
+<!-- HEADER -->
+<div class="header">
 
-    <input id="fecha" type="date">
+<h1 id="tituloPagina">
+🌱 Registro de Crecimiento de Lavanda
+</h1>
 
-    <input id="imagen" type="file">
+<p id="descripcionPagina">
+Seguimiento del crecimiento de las plantas
+</p>
 
-    <button onclick="guardar()">Guardar</button>
+</div>
 
-  </div>
+<!-- SLIDER -->
+<div class="slider-container">
 
-  <!-- REGISTROS -->
-  <h2 style="padding-left:20px;">📋 Registros</h2>
+<div class="slider" id="slider"></div>
 
-  <div id="lista"></div>
+<button class="prev" onclick="anterior()">⬅</button>
+
+<button class="next" onclick="siguiente()">➡</button>
+
+</div>
+
+<!-- FORMULARIO REGISTROS -->
+<div class="formulario oculto" id="formRegistro">
+
+<h2>📋 Agregar Registro</h2>
+
+<input id="alumno" placeholder="Nombre del alumno">
+
+<input id="altura" type="number" placeholder="Altura cm">
+
+<input id="fecha" type="date">
+
+<input id="imagen" type="file">
+
+<button onclick="guardar()">Guardar Registro</button>
+
+</div>
+
+<!-- ADMIN -->
+<div class="formulario oculto" id="panelAdmin">
+
+<h2>⚙ Panel Administrador</h2>
+
+<input id="nuevoTitulo" placeholder="Nuevo título">
+
+<input id="nuevaDescripcion" placeholder="Nueva descripción">
+
+<button onclick="cambiarPagina()">
+Guardar Cambios
+</button>
+
+</div>
+
+<!-- ARTICULOS -->
+<div class="articulos oculto" id="panelArticulos">
+
+<h2>📰 Publicar Artículo</h2>
+
+<input id="tituloArticulo" placeholder="Título">
+
+<br>
+
+<textarea id="textoArticulo"
+placeholder="Contenido del artículo">
+</textarea>
+
+<br>
+
+<input id="imagenArticulo" type="file">
+
+<button onclick="publicarArticulo()">
+Publicar
+</button>
+
+</div>
+
+<!-- REGISTROS -->
+<h2 style="padding-left:20px;">🌱 Registros</h2>
+
+<div id="lista"></div>
+
+<!-- ARTICULOS PUBLICADOS -->
+<h2 style="padding-left:20px;">📰 Artículos</h2>
+
+<div id="listaArticulos"></div>
+
+</div>
 
 <script>
 
 let indice = 0;
 
-// GUARDAR
-async function guardar() {
+/* CONTRASEÑAS */
+const PASSWORD_ADMIN = "admin123";
+const PASSWORD_REGISTRO = "lavanda123";
 
-  const alumno = document.getElementById("alumno").value;
-  const altura = document.getElementById("altura").value;
-  const fecha = document.getElementById("fecha").value;
-  const imagen = document.getElementById("imagen").files[0];
+/* LOGIN */
+function entrar(){
+
+  const tipo = document.getElementById("tipoUsuario").value;
+  const password = document.getElementById("password").value;
+
+  if(tipo === "admin"){
+
+    if(password !== PASSWORD_ADMIN){
+
+      alert("Contraseña incorrecta");
+      return;
+    }
+
+    document.getElementById("panelAdmin")
+    .classList.remove("oculto");
+
+    document.getElementById("formRegistro")
+    .classList.remove("oculto");
+
+    document.getElementById("panelArticulos")
+    .classList.remove("oculto");
+  }
+
+  if(tipo === "registro"){
+
+    if(password !== PASSWORD_REGISTRO){
+
+      alert("Contraseña incorrecta");
+      return;
+    }
+
+    document.getElementById("formRegistro")
+    .classList.remove("oculto");
+
+    document.getElementById("panelArticulos")
+    .classList.remove("oculto");
+  }
+
+  document.getElementById("login")
+  .classList.add("oculto");
+
+  document.getElementById("contenido")
+  .classList.remove("oculto");
+
+  cargar();
+}
+
+/* CAMBIAR PAGINA */
+function cambiarPagina(){
+
+  const titulo =
+  document.getElementById("nuevoTitulo").value;
+
+  const descripcion =
+  document.getElementById("nuevaDescripcion").value;
+
+  if(titulo){
+
+    document.getElementById("tituloPagina")
+    .innerText = titulo;
+  }
+
+  if(descripcion){
+
+    document.getElementById("descripcionPagina")
+    .innerText = descripcion;
+  }
+
+  alert("Página modificada");
+}
+
+/* GUARDAR */
+async function guardar(){
+
+  const alumno =
+  document.getElementById("alumno").value;
+
+  const altura =
+  document.getElementById("altura").value;
+
+  const fecha =
+  document.getElementById("fecha").value;
+
+  const imagen =
+  document.getElementById("imagen").files[0];
 
   const formData = new FormData();
 
@@ -163,35 +365,44 @@ async function guardar() {
   formData.append("imagen", imagen);
 
   await fetch("/registros", {
-    method: "POST",
-    body: formData
+
+    method:"POST",
+    body:formData
+
   });
 
   cargar();
 }
 
-// CARGAR DATOS
-async function cargar() {
+/* CARGAR */
+async function cargar(){
 
-  const res = await fetch("/registros");
-  const data = await res.json();
+  const res =
+  await fetch("/registros");
 
-  const lista = document.getElementById("lista");
-  const slider = document.getElementById("slider");
+  const data =
+  await res.json();
+
+  const lista =
+  document.getElementById("lista");
+
+  const slider =
+  document.getElementById("slider");
 
   lista.innerHTML = "";
   slider.innerHTML = "";
 
-  data.forEach((r, i) => {
+  data.forEach((r,i)=>{
 
-    // REGISTROS
     lista.innerHTML += `
+
       <div class="card">
+
         <h3>${r.alumno}</h3>
 
-        <p>🌱 Altura: ${r.altura} cm</p>
+        <p>🌱 ${r.altura} cm</p>
 
-        <p>📅 Fecha: ${r.fecha}</p>
+        <p>📅 ${r.fecha}</p>
 
         ${
           r.imagen
@@ -200,16 +411,15 @@ async function cargar() {
         }
 
       </div>
+
     `;
 
-    // SLIDER
     if(r.imagen){
 
       slider.innerHTML += `
-        <img 
-          src="${r.imagen}" 
-          class="${i === 0 ? 'active' : ''}"
-        >
+        <img
+        src="${r.imagen}"
+        class="${i===0 ? 'active':''}">
       `;
     }
 
@@ -217,31 +427,37 @@ async function cargar() {
 
 }
 
-// FLECHAS
+/* SLIDER */
 function mostrarImagen(index){
 
-  const imagenes = document.querySelectorAll(".slider img");
+  const imagenes =
+  document.querySelectorAll(".slider img");
 
-  imagenes.forEach(img => {
+  imagenes.forEach(img=>{
+
     img.classList.remove("active");
+
   });
 
   if(imagenes.length > 0){
 
-    imagenes[index].classList.add("active");
+    imagenes[index]
+    .classList.add("active");
   }
 
 }
 
 function siguiente(){
 
-  const imagenes = document.querySelectorAll(".slider img");
+  const imagenes =
+  document.querySelectorAll(".slider img");
 
   if(imagenes.length === 0) return;
 
   indice++;
 
   if(indice >= imagenes.length){
+
     indice = 0;
   }
 
@@ -250,25 +466,87 @@ function siguiente(){
 
 function anterior(){
 
-  const imagenes = document.querySelectorAll(".slider img");
+  const imagenes =
+  document.querySelectorAll(".slider img");
 
   if(imagenes.length === 0) return;
 
   indice--;
 
   if(indice < 0){
+
     indice = imagenes.length - 1;
   }
 
   mostrarImagen(indice);
 }
 
-// CAMBIO AUTOMÁTICO
-setInterval(() => {
-  siguiente();
-}, 3000);
+setInterval(()=>{
 
-cargar();
+  siguiente();
+
+},3000);
+
+/* ARTICULOS */
+function publicarArticulo(){
+
+  const titulo =
+  document.getElementById("tituloArticulo").value;
+
+  const texto =
+  document.getElementById("textoArticulo").value;
+
+  const imagenInput =
+  document.getElementById("imagenArticulo");
+
+  const archivo =
+  imagenInput.files[0];
+
+  const lector = new FileReader();
+
+  lector.onload = function(e){
+
+    document.getElementById("listaArticulos")
+    .innerHTML += `
+
+      <div class="articulo">
+
+        <h2>${titulo}</h2>
+
+        <p>${texto}</p>
+
+        ${
+          archivo
+          ? `<img src="${e.target.result}">`
+          : ""
+        }
+
+      </div>
+
+    `;
+  };
+
+  if(archivo){
+
+    lector.readAsDataURL(archivo);
+
+  }else{
+
+    document.getElementById("listaArticulos")
+    .innerHTML += `
+
+      <div class="articulo">
+
+        <h2>${titulo}</h2>
+
+        <p>${texto}</p>
+
+      </div>
+
+    `;
+  }
+
+}
 
 </script>
 
