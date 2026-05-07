@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,9 +5,72 @@
   <title>Registro de Lavanda</title>
 
   <style>
+
     body {
       font-family: Arial;
       background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ENCABEZADO */
+    .header {
+      background: #7c3aed;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* SLIDER */
+    .slider-container {
+      position: relative;
+      width: 100%;
+      height: 350px;
+      overflow: hidden;
+      background: black;
+    }
+
+    .slider {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .slider img {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+      display: none;
+    }
+
+    .slider img.active {
+      display: block;
+    }
+
+    /* FLECHAS */
+    .prev,
+    .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      padding: 15px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .prev {
+      left: 10px;
+    }
+
+    .next {
+      right: 10px;
+    }
+
+    /* FORMULARIO */
+    .formulario {
       padding: 20px;
     }
 
@@ -17,38 +79,75 @@
       margin: 5px;
     }
 
+    button {
+      background: #7c3aed;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* TARJETAS */
     .card {
       background: white;
       padding: 15px;
-      margin: 10px 0;
+      margin: 15px;
       border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
     }
 
-    img {
-      width: 200px;
+    .card img {
+      width: 250px;
       border-radius: 10px;
       margin-top: 10px;
     }
+
   </style>
 </head>
+
 <body>
 
-<h1>🌱 Registro de Crecimiento de Lavanda</h1>
+  <!-- ENCABEZADO -->
+  <div class="header">
+    <h1>🌱 Registro de Crecimiento de Lavanda</h1>
+    <p>Seguimiento del crecimiento de las plantas</p>
+  </div>
 
-<input id="alumno" placeholder="Nombre del alumno">
-<input id="altura" type="number" placeholder="Altura (cm)">
-<input id="fecha" type="date">
+  <!-- SLIDER -->
+  <div class="slider-container">
 
-<input id="imagen" type="file">
+    <div class="slider" id="slider">
+    </div>
 
-<button onclick="guardar()">Guardar</button>
+    <button class="prev" onclick="anterior()">⬅</button>
+    <button class="next" onclick="siguiente()">➡</button>
 
-<h2>📋 Registros:</h2>
+  </div>
 
-<div id="lista"></div>
+  <!-- FORMULARIO -->
+  <div class="formulario">
+
+    <input id="alumno" placeholder="Nombre del alumno">
+
+    <input id="altura" type="number" placeholder="Altura (cm)">
+
+    <input id="fecha" type="date">
+
+    <input id="imagen" type="file">
+
+    <button onclick="guardar()">Guardar</button>
+
+  </div>
+
+  <!-- REGISTROS -->
+  <h2 style="padding-left:20px;">📋 Registros</h2>
+
+  <div id="lista"></div>
 
 <script>
 
+let indice = 0;
+
+// GUARDAR
 async function guardar() {
 
   const alumno = document.getElementById("alumno").value;
@@ -71,28 +170,103 @@ async function guardar() {
   cargar();
 }
 
+// CARGAR DATOS
 async function cargar() {
 
   const res = await fetch("/registros");
   const data = await res.json();
 
   const lista = document.getElementById("lista");
+  const slider = document.getElementById("slider");
 
   lista.innerHTML = "";
+  slider.innerHTML = "";
 
-  data.forEach(r => {
+  data.forEach((r, i) => {
 
+    // REGISTROS
     lista.innerHTML += `
       <div class="card">
         <h3>${r.alumno}</h3>
+
         <p>🌱 Altura: ${r.altura} cm</p>
+
         <p>📅 Fecha: ${r.fecha}</p>
 
-        ${r.imagen ? `<img src="${r.imagen}">` : ""}
+        ${
+          r.imagen
+          ? `<img src="${r.imagen}">`
+          : ""
+        }
+
       </div>
     `;
+
+    // SLIDER
+    if(r.imagen){
+
+      slider.innerHTML += `
+        <img 
+          src="${r.imagen}" 
+          class="${i === 0 ? 'active' : ''}"
+        >
+      `;
+    }
+
   });
+
 }
+
+// FLECHAS
+function mostrarImagen(index){
+
+  const imagenes = document.querySelectorAll(".slider img");
+
+  imagenes.forEach(img => {
+    img.classList.remove("active");
+  });
+
+  if(imagenes.length > 0){
+
+    imagenes[index].classList.add("active");
+  }
+
+}
+
+function siguiente(){
+
+  const imagenes = document.querySelectorAll(".slider img");
+
+  if(imagenes.length === 0) return;
+
+  indice++;
+
+  if(indice >= imagenes.length){
+    indice = 0;
+  }
+
+  mostrarImagen(indice);
+}
+
+function anterior(){
+
+  const imagenes = document.querySelectorAll(".slider img");
+
+  if(imagenes.length === 0) return;
+
+  indice--;
+
+  if(indice < 0){
+    indice = imagenes.length - 1;
+  }
+
+  mostrarImagen(indice);
+}
+
+// CAMBIO AUTOMÁTICO
+setInterval(() => {
+  siguiente();
+}, 3000);
 
 cargar();
 
