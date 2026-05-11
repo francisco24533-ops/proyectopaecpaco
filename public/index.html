@@ -1,554 +1,222 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Lavanda App</title>
 
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-body{
-  font-family: Arial;
-  margin:0;
-  background:#f4f4f4;
-}
+  <title>Lavanda App</title>
 
-/* LOGIN */
-.login{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
-  background:#7c3aed;
-  color:white;
-}
+  <link rel="stylesheet" href="style.css">
 
-.login input,
-.login select,
-.login button{
-  padding:12px;
-  margin:10px;
-  width:250px;
-  border:none;
-  border-radius:5px;
-}
-
-.login button{
-  background:white;
-  color:#7c3aed;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-/* HEADER */
-.header{
-  background:#7c3aed;
-  color:white;
-  text-align:center;
-  padding:20px;
-}
-
-/* SLIDER */
-.slider-container{
-  position:relative;
-  width:100%;
-  height:350px;
-  overflow:hidden;
-  background:black;
-}
-
-.slider img{
-  width:100%;
-  height:350px;
-  object-fit:cover;
-  display:none;
-}
-
-.slider img.active{
-  display:block;
-}
-
-.prev,
-.next{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  background:rgba(0,0,0,0.5);
-  color:white;
-  border:none;
-  padding:15px;
-  cursor:pointer;
-  font-size:20px;
-}
-
-.prev{
-  left:10px;
-}
-
-.next{
-  right:10px;
-}
-
-/* FORMULARIOS */
-.formulario,
-.articulos{
-  padding:20px;
-}
-
-input,
-textarea,
-button{
-  padding:10px;
-  margin:5px;
-}
-
-button{
-  background:#7c3aed;
-  color:white;
-  border:none;
-  cursor:pointer;
-}
-
-textarea{
-  width:300px;
-  height:100px;
-}
-
-/* TARJETAS */
-.card{
-  background:white;
-  padding:15px;
-  margin:15px;
-  border-radius:10px;
-  box-shadow:0 0 5px rgba(0,0,0,0.2);
-}
-
-.card img{
-  width:250px;
-  border-radius:10px;
-  margin-top:10px;
-}
-
-/* ARTICULOS */
-.articulo{
-  background:white;
-  margin:20px;
-  padding:20px;
-  border-radius:10px;
-}
-
-.articulo img{
-  width:300px;
-  border-radius:10px;
-}
-
-.oculto{
-  display:none;
-}
-
-</style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
-<div class="login" id="login">
+<!-- MENU -->
+<div class="sidebar">
 
-<h1>🌱 Sistema Lavanda</h1>
+  <h2>🌱 Lavanda</h2>
 
-<select id="tipoUsuario">
-  <option value="visitante">Visitante</option>
-  <option value="registro">Registro Lavanda</option>
-  <option value="admin">Administrador</option>
-</select>
+  <button onclick="mostrarSeccion('inicio')">
+    🏠 Inicio
+  </button>
 
-<input type="password" id="password" placeholder="Contraseña">
+  <button onclick="mostrarSeccion('registros')">
+    🌱 Registros
+  </button>
 
-<button onclick="entrar()">Entrar</button>
+  <button onclick="mostrarSeccion('articulos')">
+    📰 Artículos
+  </button>
+
+  <button onclick="mostrarSeccion('diagramas')">
+    📊 Diagramas
+  </button>
+
+  <button onclick="mostrarSeccion('tutoriales')">
+    🎥 Tutoriales
+  </button>
+
+  <button onclick="mostrarLogin()">
+    🔐 Entrar
+  </button>
 
 </div>
 
 <!-- CONTENIDO -->
-<div id="contenido" class="oculto">
+<div class="contenido">
 
-<!-- HEADER -->
-<div class="header">
+  <!-- INICIO -->
+  <section id="inicio" class="seccion activa">
 
-<h1 id="tituloPagina">
-🌱 Registro de Crecimiento de Lavanda
-</h1>
+    <h1>🌱 ¿Qué es la Lavanda?</h1>
 
-<p id="descripcionPagina">
-Seguimiento del crecimiento de las plantas
-</p>
+    <p>
+      La lavanda es una planta aromática conocida
+      por su agradable olor y propiedades relajantes.
+    </p>
+
+    <img
+    class="imagenInicio"
+    src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?q=80&w=1200">
+
+  </section>
+
+  <!-- PANEL REGISTRADOR -->
+  <section id="panelRegistro" class="seccion">
+
+    <h1>✍ Panel Registrador</h1>
+
+    <!-- REGISTRO -->
+    <div class="card">
+
+      <h2>🌱 Nuevo Registro</h2>
+
+      <input type="text" id="alumno" placeholder="Nombre">
+
+      <input type="number" id="altura" placeholder="Altura">
+
+      <input type="date" id="fecha">
+
+      <input type="file" id="imagenRegistro">
+
+      <button onclick="crearRegistro()">
+        Guardar Registro
+      </button>
+
+    </div>
+
+    <!-- ARTICULOS -->
+    <div class="card">
+
+      <h2>📰 Crear Artículo</h2>
+
+      <input type="text" id="tituloArticulo" placeholder="Título">
+
+      <textarea
+      id="contenidoArticulo"
+      rows="5"
+      placeholder="Contenido"></textarea>
+
+      <input type="file" id="imagenArticulo">
+
+      <button onclick="crearArticulo()">
+        Publicar Artículo
+      </button>
+
+    </div>
+
+    <!-- DIAGRAMAS -->
+    <div class="card">
+
+      <h2>📊 Crear Diagrama</h2>
+
+      <input type="text" id="tituloDiagrama" placeholder="Título">
+
+      <input type="file" id="imagenDiagrama">
+
+      <button onclick="crearDiagrama()">
+        Publicar Diagrama
+      </button>
+
+    </div>
+
+    <!-- TUTORIALES -->
+    <div class="card">
+
+      <h2>🎥 Crear Tutorial</h2>
+
+      <input type="text" id="tituloTutorial" placeholder="Título">
+
+      <input type="text" id="linkTutorial" placeholder="Link YouTube">
+
+      <button onclick="crearTutorial()">
+        Publicar Tutorial
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- REGISTROS -->
+  <section id="registros" class="seccion">
+
+    <h1>🌱 Registros</h1>
+
+    <div id="listaRegistros"></div>
+
+  </section>
+
+  <!-- ARTICULOS -->
+  <section id="articulos" class="seccion">
+
+    <h1>📰 Artículos</h1>
+
+    <div id="listaArticulos"></div>
+
+  </section>
+
+  <!-- DIAGRAMAS -->
+  <section id="diagramas" class="seccion">
+
+    <h1>📊 Diagramas</h1>
+
+    <div id="listaDiagramas"></div>
+
+  </section>
+
+  <!-- TUTORIALES -->
+  <section id="tutoriales" class="seccion">
+
+    <h1>🎥 Tutoriales</h1>
+
+    <div id="listaTutoriales"></div>
+
+  </section>
 
 </div>
 
-<!-- SLIDER -->
-<div class="slider-container">
+<!-- LOGIN -->
+<div class="login oculto" id="login">
 
-<div class="slider" id="slider"></div>
+  <div class="login-box">
 
-<button class="prev" onclick="anterior()">⬅</button>
+    <h2>🔐 Login</h2>
 
-<button class="next" onclick="siguiente()">➡</button>
+    <select id="tipoUsuario">
 
-</div>
+      <option value="visitante">
+        Visitante
+      </option>
 
-<!-- FORMULARIO REGISTROS -->
-<div class="formulario oculto" id="formRegistro">
+      <option value="registro">
+        Registrador
+      </option>
 
-<h2>📋 Agregar Registro</h2>
+      <option value="admin">
+        Administrador
+      </option>
 
-<input id="alumno" placeholder="Nombre del alumno">
+    </select>
 
-<input id="altura" type="number" placeholder="Altura cm">
+    <input
+    type="password"
+    id="password"
+    placeholder="Contraseña">
 
-<input id="fecha" type="date">
+    <button onclick="entrar()">
+      Entrar
+    </button>
 
-<input id="imagen" type="file">
+    <button onclick="cerrarLogin()">
+      Cancelar
+    </button>
 
-<button onclick="guardar()">Guardar Registro</button>
-
-</div>
-
-<!-- ADMIN -->
-<div class="formulario oculto" id="panelAdmin">
-
-<h2>⚙ Panel Administrador</h2>
-
-<input id="nuevoTitulo" placeholder="Nuevo título">
-
-<input id="nuevaDescripcion" placeholder="Nueva descripción">
-
-<button onclick="cambiarPagina()">
-Guardar Cambios
-</button>
+  </div>
 
 </div>
 
-<!-- ARTICULOS -->
-<div class="articulos oculto" id="panelArticulos">
-
-<h2>📰 Publicar Artículo</h2>
-
-<input id="tituloArticulo" placeholder="Título">
-
-<br>
-
-<textarea id="textoArticulo"
-placeholder="Contenido del artículo">
-</textarea>
-
-<br>
-
-<input id="imagenArticulo" type="file">
-
-<button onclick="publicarArticulo()">
-Publicar
-</button>
-
-</div>
-
-<!-- REGISTROS -->
-<h2 style="padding-left:20px;">🌱 Registros</h2>
-
-<div id="lista"></div>
-
-<!-- ARTICULOS PUBLICADOS -->
-<h2 style="padding-left:20px;">📰 Artículos</h2>
-
-<div id="listaArticulos"></div>
-
-</div>
-
-<script>
-
-let indice = 0;
-
-/* CONTRASEÑAS */
-const PASSWORD_ADMIN = "admin123";
-const PASSWORD_REGISTRO = "lavanda123";
-
-/* LOGIN */
-function entrar(){
-
-  const tipo = document.getElementById("tipoUsuario").value;
-  const password = document.getElementById("password").value;
-
-  if(tipo === "admin"){
-
-    if(password !== PASSWORD_ADMIN){
-
-      alert("Contraseña incorrecta");
-      return;
-    }
-
-    document.getElementById("panelAdmin")
-    .classList.remove("oculto");
-
-    document.getElementById("formRegistro")
-    .classList.remove("oculto");
-
-    document.getElementById("panelArticulos")
-    .classList.remove("oculto");
-  }
-
-  if(tipo === "registro"){
-
-    if(password !== PASSWORD_REGISTRO){
-
-      alert("Contraseña incorrecta");
-      return;
-    }
-
-    document.getElementById("formRegistro")
-    .classList.remove("oculto");
-
-    document.getElementById("panelArticulos")
-    .classList.remove("oculto");
-  }
-
-  document.getElementById("login")
-  .classList.add("oculto");
-
-  document.getElementById("contenido")
-  .classList.remove("oculto");
-
-  cargar();
-}
-
-/* CAMBIAR PAGINA */
-function cambiarPagina(){
-
-  const titulo =
-  document.getElementById("nuevoTitulo").value;
-
-  const descripcion =
-  document.getElementById("nuevaDescripcion").value;
-
-  if(titulo){
-
-    document.getElementById("tituloPagina")
-    .innerText = titulo;
-  }
-
-  if(descripcion){
-
-    document.getElementById("descripcionPagina")
-    .innerText = descripcion;
-  }
-
-  alert("Página modificada");
-}
-
-/* GUARDAR */
-async function guardar(){
-
-  const alumno =
-  document.getElementById("alumno").value;
-
-  const altura =
-  document.getElementById("altura").value;
-
-  const fecha =
-  document.getElementById("fecha").value;
-
-  const imagen =
-  document.getElementById("imagen").files[0];
-
-  const formData = new FormData();
-
-  formData.append("alumno", alumno);
-  formData.append("altura", altura);
-  formData.append("fecha", fecha);
-  formData.append("imagen", imagen);
-
-  await fetch("/registros", {
-
-    method:"POST",
-    body:formData
-
-  });
-
-  cargar();
-}
-
-/* CARGAR */
-async function cargar(){
-
-  const res =
-  await fetch("/registros");
-
-  const data =
-  await res.json();
-
-  const lista =
-  document.getElementById("lista");
-
-  const slider =
-  document.getElementById("slider");
-
-  lista.innerHTML = "";
-  slider.innerHTML = "";
-
-  data.forEach((r,i)=>{
-
-    lista.innerHTML += `
-
-      <div class="card">
-
-        <h3>${r.alumno}</h3>
-
-        <p>🌱 ${r.altura} cm</p>
-
-        <p>📅 ${r.fecha}</p>
-
-        ${
-          r.imagen
-          ? `<img src="${r.imagen}">`
-          : ""
-        }
-
-      </div>
-
-    `;
-
-    if(r.imagen){
-
-      slider.innerHTML += `
-        <img
-        src="${r.imagen}"
-        class="${i===0 ? 'active':''}">
-      `;
-    }
-
-  });
-
-}
-
-/* SLIDER */
-function mostrarImagen(index){
-
-  const imagenes =
-  document.querySelectorAll(".slider img");
-
-  imagenes.forEach(img=>{
-
-    img.classList.remove("active");
-
-  });
-
-  if(imagenes.length > 0){
-
-    imagenes[index]
-    .classList.add("active");
-  }
-
-}
-
-function siguiente(){
-
-  const imagenes =
-  document.querySelectorAll(".slider img");
-
-  if(imagenes.length === 0) return;
-
-  indice++;
-
-  if(indice >= imagenes.length){
-
-    indice = 0;
-  }
-
-  mostrarImagen(indice);
-}
-
-function anterior(){
-
-  const imagenes =
-  document.querySelectorAll(".slider img");
-
-  if(imagenes.length === 0) return;
-
-  indice--;
-
-  if(indice < 0){
-
-    indice = imagenes.length - 1;
-  }
-
-  mostrarImagen(indice);
-}
-
-setInterval(()=>{
-
-  siguiente();
-
-},3000);
-
-/* ARTICULOS */
-function publicarArticulo(){
-
-  const titulo =
-  document.getElementById("tituloArticulo").value;
-
-  const texto =
-  document.getElementById("textoArticulo").value;
-
-  const imagenInput =
-  document.getElementById("imagenArticulo");
-
-  const archivo =
-  imagenInput.files[0];
-
-  const lector = new FileReader();
-
-  lector.onload = function(e){
-
-    document.getElementById("listaArticulos")
-    .innerHTML += `
-
-      <div class="articulo">
-
-        <h2>${titulo}</h2>
-
-        <p>${texto}</p>
-
-        ${
-          archivo
-          ? `<img src="${e.target.result}">`
-          : ""
-        }
-
-      </div>
-
-    `;
-  };
-
-  if(archivo){
-
-    lector.readAsDataURL(archivo);
-
-  }else{
-
-    document.getElementById("listaArticulos")
-    .innerHTML += `
-
-      <div class="articulo">
-
-        <h2>${titulo}</h2>
-
-        <p>${texto}</p>
-
-      </div>
-
-    `;
-  }
-
-}
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
